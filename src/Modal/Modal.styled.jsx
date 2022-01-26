@@ -3,6 +3,7 @@ import styled from 'styled-components';
 const ModalContainer = styled.div`
   max-width: calc(100vw - 48px);
   height: calc(100vh - 24px);
+  cursor: auto;
 `;
 
 const Overlay = styled.div`
@@ -16,6 +17,7 @@ const Overlay = styled.div`
   align-items: center;
   background-color: rgba(0, 0, 0, 0.8);
   z-index: 1200;
+  cursor: zoom-out;
 `;
 
 export { ModalContainer, Overlay };
