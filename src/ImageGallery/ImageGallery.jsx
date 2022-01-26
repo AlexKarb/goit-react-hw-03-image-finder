@@ -1,5 +1,6 @@
 import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem';
 import List from './ImageGallery.styled';
+import PropTypes from 'prop-types';
 
 const ImageGallery = ({ images, setActiveImage }) => (
   <List>
@@ -15,3 +16,13 @@ const ImageGallery = ({ images, setActiveImage }) => (
 );
 
 export default ImageGallery;
+
+ImageGallery.propTypes = {
+  images: PropTypes.arrayOf(
+    PropTypes.shape({
+      webformatURL: PropTypes.string.isRequired,
+      tags: PropTypes.string,
+    }),
+  ).isRequired,
+  setActiveImage: PropTypes.func.isRequired,
+};

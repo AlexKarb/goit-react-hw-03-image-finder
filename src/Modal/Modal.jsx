@@ -1,9 +1,10 @@
 import { Component } from 'react';
 import { createPortal } from 'react-dom';
 
-import IconButton from '../Utils/IconButton/IconButton';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { ModalContainer, Overlay } from './Modal.styled';
+import IconButton from '../Utils/IconButton/IconButton';
+import PropTypes from 'prop-types';
 
 const ModalRoot = document.querySelector('#modal-root');
 
@@ -36,3 +37,8 @@ class ModalWindow extends Component {
 }
 
 export default ModalWindow;
+
+ModalWindow.propTypes = {
+  onClick: PropTypes.func.isRequired,
+  children: PropTypes.node,
+};

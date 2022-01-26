@@ -1,7 +1,8 @@
-import { HeaderContainer, StyledForm, FormInput } from './Searchbar.styled';
-import { FcSearch } from 'react-icons/fc';
-import IconButton from '../Utils/IconButton/IconButton';
 import { Formik } from 'formik';
+import { FcSearch } from 'react-icons/fc';
+import { HeaderContainer, StyledForm, FormInput } from './Searchbar.styled';
+import IconButton from '../Utils/IconButton/IconButton';
+import PropTypes from 'prop-types';
 
 const Searchbar = ({ onSubmit }) => (
   <HeaderContainer>
@@ -27,3 +28,7 @@ const Searchbar = ({ onSubmit }) => (
 );
 
 export default Searchbar;
+
+Searchbar.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+};

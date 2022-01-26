@@ -1,4 +1,6 @@
 import axios from 'axios';
+import PropTypes from 'prop-types';
+
 axios.defaults.baseURL = `https://pixabay.com/api`;
 
 const DATA_API = {
@@ -36,3 +38,8 @@ const api = {
 };
 
 export default api;
+
+getImages.propTypes = {
+  searchRequest: PropTypes.string.isRequired,
+  page: PropTypes.string.isRequired,
+};

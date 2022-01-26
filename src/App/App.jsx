@@ -29,7 +29,7 @@ export default class App extends Component {
 
   onSearch = () => {
     this.isLoading();
-    api
+    return api
       .getImages(this.state.searchRequest, this.state.page)
       .then(this.setResolvedRequest)
       .catch(this.setRejectedRequest);
@@ -48,6 +48,12 @@ export default class App extends Component {
   setRejectedRequest = error => this.setState({ error, status: 'rejected' });
 
   setActiveImage = image => this.setState({ activeImage: image });
+
+  smoothScroll = () =>
+    window.scrollBy({
+      top: 430,
+      behavior: 'smooth',
+    });
 
   onSubmit = searchRequest =>
     this.setState({
@@ -74,7 +80,15 @@ export default class App extends Component {
           <ImageGallery images={images} setActiveImage={this.setActiveImage} />
         )}
 
-        {showButton && <Button text="Load more" onClick={this.onSearch} />}
+        {showButton && (
+          <Button
+            text="Load more"
+            onClick={async () => {
+              await this.onSearch();
+              this.smoothScroll();
+            }}
+          />
+        )}
 
         {Error && <ErrorMessage text={error} />}
 
