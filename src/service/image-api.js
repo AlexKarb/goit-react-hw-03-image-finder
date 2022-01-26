@@ -8,19 +8,31 @@ const DATA_API = {
   orientation: 'horizontal',
   page: '1',
   per_page: '12',
-};
 
-const createApiConfiguration = data =>
-  Object.entries(data)
-    .map(type => type.join('='))
-    .join('&');
+  createApiConfiguration() {
+    return Object.entries(this)
+      .map(type => type.join('='))
+      .join('&');
+  },
+};
 
 const getImages = async (searchRequest, page) => {
   DATA_API.q = searchRequest;
   DATA_API.page = page;
 
-  const res = await axios(`?${createApiConfiguration(DATA_API)}`);
-  return await res.data;
+  const response = await axios(`?${DATA_API.createApiConfiguration()}`);
+
+  return new Promise((resolve, reject) => {
+    if (response.data.hits.length > 0) {
+      resolve(response.data);
+    } else {
+      reject('Not found images');
+    }
+  });
 };
 
-export default getImages;
+const api = {
+  getImages,
+};
+
+export default api;

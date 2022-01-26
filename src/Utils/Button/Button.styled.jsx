@@ -9,6 +9,7 @@ const StyledButton = styled.button`
   display: block;
   margin-right: auto;
   margin-left: auto;
+  margin-bottom: 20px;
   color: #fff;
   border: 0;
   text-decoration: none;

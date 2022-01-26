@@ -15,16 +15,17 @@ class ModalWindow extends Component {
     window.removeEventListener('keydown', this.onEscapeKeydown);
   }
 
-  onEscapeKeydown = e => e.code === 'Escape' && this.props.toggleModal();
+  onEscapeKeydown = e => e.code === 'Escape' && this.props.onClick();
+  backgroundClick = e => e.currentTarget === e.target && this.props.onClick();
 
   render() {
-    const { toggleModal, children } = this.props;
+    const { onClick, children } = this.props;
 
     return createPortal(
-      <Overlay onClick={e => e.currentTarget === e.target && toggleModal()}>
+      <Overlay onClick={this.backgroundClick}>
         <ModalContainer>{children}</ModalContainer>
         <IconButton
-          onClick={toggleModal}
+          onClick={onClick}
           icon={<AiOutlineCloseCircle />}
           dataAction="close"
         />

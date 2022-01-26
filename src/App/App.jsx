@@ -1,50 +1,41 @@
 import { Component } from 'react';
+import api from '../service/image-api';
 import ImageGallery from '../ImageGallery/ImageGallery';
 import Searchbar from '../Searchbar/Searchbar';
-import Button from '../Utils/Button/Button';
-import getImages from '../service/image-api';
-import Loader from '../Utils/Loader/Loader';
-
 import ModalWindow from '../Modal/Modal';
+import Loader from '../Utils/Loader/Loader';
+import Button from '../Utils/Button/Button';
+import ErrorMessage from '../Utils/ErrorMessage/ErrorMessage';
 
-// status:
-// //   'idle',
-//    'pending',
-// //  пш'resolved',
-// //   'rejected',
-//end
-//cant find
+const initialValue = {
+  images: [],
+  page: 1,
+  total: null,
+};
 
 export default class App extends Component {
   state = {
+    ...initialValue,
     searchRequest: '',
-    images: [],
-    page: 1,
-    activeImage: {},
-    showModal: false,
-    total: null,
+    activeImage: null,
     status: 'idle',
     error: null,
   };
 
-  async componentDidUpdate(_, { searchRequest, activeImage }) {
-    const changeSearchRequest = searchRequest !== this.state.searchRequest;
-    const clickOnImage = activeImage !== this.state.activeImage;
-
-    if (changeSearchRequest) {
-      await this.resetOldImageState();
-      this.imagesFinder();
-    }
-
-    if (clickOnImage) this.toggleShowModal();
+  componentDidUpdate(_, { searchRequest }) {
+    const searchRequestHasChanged = searchRequest !== this.state.searchRequest;
+    if (searchRequestHasChanged) this.onSearch();
   }
 
-  imagesFinder = () => {
-    this.setState({ status: 'pending' });
-    getImages(this.state.searchRequest, this.state.page)
+  onSearch = () => {
+    this.isLoading();
+    api
+      .getImages(this.state.searchRequest, this.state.page)
       .then(this.setResolvedRequest)
       .catch(this.setRejectedRequest);
   };
+
+  isLoading = () => this.setState({ status: 'loading' });
 
   setResolvedRequest = ({ hits, total }) =>
     this.setState(({ images, page }) => ({
@@ -58,21 +49,22 @@ export default class App extends Component {
 
   setActiveImage = image => this.setState({ activeImage: image });
 
-  resetOldImageState = () => {
-    this.setState({ images: [], page: 1, total: null });
-  };
-
-  toggleShowModal = () =>
-    this.setState(({ showModal }) => ({ showModal: !showModal }));
-
-  onSubmit = ({ searchValue }) =>
-    this.setState({ searchRequest: searchValue.split(' ').join('+') });
+  onSubmit = searchRequest =>
+    this.setState({
+      searchRequest,
+      ...initialValue,
+    });
 
   render() {
-    const { total, page, images, showModal, activeImage, status } = this.state;
+    const { total, page, images, activeImage, status, error } = this.state;
+
+    const Success = status === 'resolved';
+    const isLoading = status === 'loading';
+    const Error = status === 'rejected';
 
     const endOfColection = Math.ceil(total / 12) + 1 === page;
     const imageIsFound = images.length > 0;
+    const showButton = !endOfColection && imageIsFound && Success;
 
     return (
       <>
@@ -82,14 +74,14 @@ export default class App extends Component {
           <ImageGallery images={images} setActiveImage={this.setActiveImage} />
         )}
 
-        {!endOfColection && imageIsFound && (
-          <Button text="Load more" onClick={this.imagesFinder} />
-        )}
+        {showButton && <Button text="Load more" onClick={this.onSearch} />}
 
-        {status === 'pending' && <Loader />}
+        {Error && <ErrorMessage text={error} />}
 
-        {showModal && (
-          <ModalWindow toggleModal={this.toggleShowModal}>
+        {isLoading && <Loader />}
+
+        {activeImage && (
+          <ModalWindow onClick={() => this.setState({ activeImage: null })}>
             <img src={activeImage.largeImageURL} alt={activeImage.tags} />
           </ModalWindow>
         )}

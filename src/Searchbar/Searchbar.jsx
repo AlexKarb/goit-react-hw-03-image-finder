@@ -7,8 +7,8 @@ const Searchbar = ({ onSubmit }) => (
   <HeaderContainer>
     <Formik
       initialValues={{ searchValue: '' }}
-      onSubmit={(values, { resetForm }) => {
-        onSubmit(values);
+      onSubmit={({ searchValue }, { resetForm }) => {
+        onSubmit(searchValue.split(' ').join('+'));
         resetForm();
       }}
     >
